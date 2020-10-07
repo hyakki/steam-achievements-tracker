@@ -1,28 +1,14 @@
 <template>
   <div class="home">
-    <div class="data" v-if="data">
-      <Infos
-        :name="data.playerName"
-        :game="data.name"
-        :avatar="data.playerAvatar"
-        :hours="data.hours"
-        :achieved="data.playerAchievements.length"
-        :total="data.totalAchievements.length"
-      />
-
-      <Achievements
-        :player="data.playerAchievements"
-        :total="data.totalAchievements"
-        :name="data.name"
-      />
-    </div>
+    <Infos />
+    <Achievements />
   </div>
 </template>
 
 <style lang="scss" scoped></style>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import Infos from '@/components/Infos.vue'
 import Achievements from '@/components/Achievements.vue'
 import {
@@ -32,6 +18,9 @@ import {
   getPlayerSummaries,
   getOwnedGames,
 } from '@/api/steamfake.ts'
+import { player } from '@/store/player.ts'
+import { game } from '@/store/game.ts'
+import { achievements, mark } from '@/store/achievements.ts'
 
 interface GenericObject {
   [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -53,20 +42,34 @@ export default defineComponent({
     Achievements,
   },
   setup() {
-    const data = ref<null | GameData>(null)
-
     const userStatsForGame = getUserStatsForGame()
     const schemaForGame = getSchemaForGame()
     const playerSummaries = getPlayerSummaries()
     const ownedGames = getOwnedGames()
 
-    getData(userStatsForGame, schemaForGame, playerSummaries, ownedGames).then(
-      d => (data.value = d)
-    )
+    setTimeout(() => {
+      getData(
+        userStatsForGame,
+        schemaForGame,
+        playerSummaries,
+        ownedGames
+      ).then(d => {
+        player.value = Object.assign(player.value, {
+          avatar: d.playerAvatar,
+          name: d.playerName,
+        })
 
-    return {
-      data,
-    }
+        game.value = Object.assign(game.value, {
+          name: d.name,
+          hours: d.hours,
+        })
+
+        achievements.value = Object.assign(achievements.value, {
+          completed: d.playerAchievements,
+          total: d.totalAchievements,
+        })
+      })
+    }, 1000)
   },
 })
 </script>
