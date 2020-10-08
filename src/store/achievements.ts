@@ -5,10 +5,6 @@ const achievements = ref({
   completed: [] as string[],
   formated: [],
   marked: [] as string[],
-  // percent: 0,
-  // next: [] as Record<string, string>[],
-  // todo: [] as Record<string, string>[],
-  // done: [] as Record<string, string>[],
 })
 
 const mark = (name: string) => {
@@ -22,33 +18,6 @@ const mark = (name: string) => {
     achievements.value.marked = [name].concat(achievements.value.marked)
   }
 }
-
-// watch(
-//   () => [achievements.value.total, achievements.value.completed],
-//   () => {
-//     const { total, completed } = achievements.value
-
-//     achievements.value.percent =
-//       Math.round((total.length / completed.length) * 10) / 10
-//   }
-// )
-
-// watch(
-//   () => [achievements.value.total, achievements.value.marked],
-//   () => {
-//     const { total, completed, marked } = achievements.value
-
-//     achievements.value.next = total.filter(a => {
-//       return marked.indexOf(a.name) >= 0
-//     })
-//     achievements.value.todo = total.filter(a => {
-//       return completed.indexOf(a.name) < 0 && marked.indexOf(a.name) < 0
-//     })
-//     achievements.value.done = total.filter(a => {
-//       return completed.indexOf(a.name) >= 0 && marked.indexOf(a.name) < 0
-//     })
-//   }
-// )
 
 const next = computed(() => {
   return achievements.value.total.filter(a => {

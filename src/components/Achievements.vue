@@ -23,6 +23,27 @@
   </div>
 </template>
 
+<script lang="ts">
+import { defineComponent } from 'vue'
+import Achievement from '@/components/Achievement.vue'
+import { achievements, next, todo, done } from '@/store/achievements.ts'
+
+export default defineComponent({
+  name: 'Achievements',
+  components: {
+    Achievement,
+  },
+  setup() {
+    return {
+      achievements,
+      done,
+      next,
+      todo,
+    }
+  },
+})
+</script>
+
 <style lang="scss" scoped>
 .achievements__list {
   display: flex;
@@ -68,23 +89,3 @@
 }
 </style>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Achievement from '@/components/Achievement.vue'
-import { achievements, next, todo, done } from '@/store/achievements.ts'
-
-export default defineComponent({
-  name: 'Achievements',
-  components: {
-    Achievement,
-  },
-  setup() {
-    return {
-      achievements,
-      done,
-      next,
-      todo,
-    }
-  },
-})
-</script>
