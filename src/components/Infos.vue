@@ -12,6 +12,15 @@
     <div class="infos__hours">
       {{ game.hours }}
     </div>
+    <div class="infos__hltb">
+      <div
+        class="infos__hltb__entry"
+        v-for="(entry, index) in entries"
+        :key="`hltb-entry-${index}`"
+      >
+        {{ entry[0] }}: {{ entry[1] }}
+      </div>
+    </div>
     <div class="infos__progress">
       <div class="infos__progress__bar">
         <div
@@ -32,12 +41,14 @@ import { defineComponent } from 'vue'
 import { player } from '@/store/player.ts'
 import { game } from '@/store/game.ts'
 import { achievements, percent } from '@/store/achievements.ts'
+import { entries } from '@/store/howlongtobeat.ts'
 
 export default defineComponent({
   name: 'Infos',
   setup() {
     return {
       achievements,
+      entries,
       game,
       percent,
       player,
@@ -87,6 +98,15 @@ export default defineComponent({
 
 .infos__hours {
   margin-top: 5px;
+}
+
+.infos__hltb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  font-size: 13px;
+  line-height: 1.2em;
 }
 
 .infos__progress {

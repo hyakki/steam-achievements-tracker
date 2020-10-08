@@ -21,6 +21,7 @@ import {
 import { player } from '@/store/player.ts'
 import { game } from '@/store/game.ts'
 import { achievements } from '@/store/achievements.ts'
+import { entries, search } from '@/store/howlongtobeat.ts'
 
 interface GenericObject {
   [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -68,6 +69,10 @@ export default defineComponent({
           completed: d.playerAchievements,
           total: d.totalAchievements,
         })
+      })
+
+      search('hades').then(d => {
+        entries.value = d
       })
     }, 1500)
   },

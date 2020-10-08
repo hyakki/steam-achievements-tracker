@@ -1,7 +1,50 @@
-import carbon14 from 'carbon14'
+import { ref } from 'vue'
 
-const search = (name: string) => {
-  return carbon14(name)
+const corsAnywhere = 'https://cors-anywhere.herokuapp.com/'
+const hltbURL = 'https://howlongtobeat.com/search_results?page=1'
+
+const chunk = (arr: string[], size: number) => {
+  const res: Array<string[]> = []
+
+  while (arr.length) {
+    res.push(arr.splice(0, size))
+  }
+
+  return res
 }
 
-export { search }
+const search = async (name: string): Promise<Array<string[]>> => {
+  return fetch(`${corsAnywhere}${hltbURL}`, {
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded',
+    },
+    referrer: 'https://howlongtobeat.com/',
+    referrerPolicy: 'no-referrer-when-downgrade',
+    body: `queryString=${encodeURI(
+      name
+    )}&t=games&sorthead=popular&sortd=Normal Order&plat=PC&length_type=main&length_min=&length_max=&detail=`,
+    method: 'POST',
+    // mode: 'cors',
+    credentials: 'omit',
+  })
+    .then(content => {
+      return content.text()
+    })
+    .then(data => {
+      const tmp = document.createElement('div')
+
+      tmp.innerHTML = data
+
+      const firstSearchList = tmp.querySelector(
+        '.search_list_details'
+      ) as HTMLDivElement
+      const arr = firstSearchList.querySelectorAll('.search_list_tidbit')
+      const arr2 = [...arr].map(a => a.textContent) as string[]
+
+      return chunk(arr2, 2)
+    })
+}
+
+const entries = ref([] as Array<string[]>)
+
+export { search, entries }
