@@ -1,22 +1,18 @@
 const appid = '250900' // binding of isaac rebirth
 
-interface GenericObject {
-  [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
-}
-
 interface GameData {
   name: string
-  playerAchievements: GenericObject[]
+  playerAchievements: Record<string, string>[]
   playerAvatar: string
   playerName: string
-  totalAchievements: GenericObject[]
+  totalAchievements: Record<string, string>[]
   hours: string
 }
 
-import userStatsForGame from './userStatsForGame.js'
-import schemaForGame from './schemaForGame.js'
-import playerSummaries from './playerSummaries.js'
-import ownedGames from './ownedGames.js'
+import userStatsForGame from '@/api/fakeData/userStatsForGame.js'
+import schemaForGame from '@/api/fakeData/schemaForGame.js'
+import playerSummaries from '@/api/fakeData/playerSummaries.js'
+import ownedGames from '@/api/fakeData/ownedGames.js'
 
 const getUserStatsForGame = () => {
   return new Promise(resolve => {

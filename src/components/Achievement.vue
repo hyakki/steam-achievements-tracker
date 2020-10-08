@@ -33,10 +33,10 @@
   display: flex;
   align-items: flex-start;
   min-height: 75px;
+  border: 1px solid black;
   flex-shrink: 0;
   padding: 10px 55px 10px 10px;
   background-color: #fff;
-  border: 1px solid black;
 }
 
 .achievement__picture-outer {

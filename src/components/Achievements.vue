@@ -1,41 +1,25 @@
 <template>
   <div class="achievements">
-    <h1>Target: {{ achievements.next.length }}</h1>
-    <ul class="achievements__list">
-      <li
-        class="achievement__item"
-        v-for="achievement in achievements.next"
-        :key="`achievement-${achievement.name}`"
-      >
-        <Achievement :achievement="achievement" />
-      </li>
-    </ul>
+    <template
+      v-for="(list, index) in [next, todo, done]"
+      :key="`list-${index}`"
+    >
+      <h1>Target: {{ list.length }}</h1>
+      <ul class="achievements__list">
+        <li
+          class="achievements__item"
+          v-for="achievement in list"
+          :key="`achievement-${achievement.name}`"
+        >
+          <Achievement
+            class="achievements__item-inner"
+            :achievement="achievement"
+          />
+        </li>
+      </ul>
 
-    <hr />
-
-    <h1>Todo: {{ achievements.todo.length }}</h1>
-    <ul class="achievements__list">
-      <li
-        class="achievement__item"
-        v-for="achievement in achievements.todo"
-        :key="`achievement-${achievement.name}`"
-      >
-        <Achievement :achievement="achievement" />
-      </li>
-    </ul>
-
-    <hr />
-
-    <h1>Done: {{ achievements.done.length }}</h1>
-    <ul class="achievements__list">
-      <li
-        class="achievement__item"
-        v-for="achievement in achievements.done"
-        :key="`achievement-${achievement.name}`"
-      >
-        <Achievement :achievement="achievement" />
-      </li>
-    </ul>
+      <hr />
+    </template>
   </div>
 </template>
 
@@ -48,7 +32,7 @@
   padding: 0;
 }
 
-.achievement__item {
+.achievements__item {
   position: relative;
   width: calc(100% / 1 + 1px);
   margin-top: -1px;
@@ -78,12 +62,16 @@
     width: calc(100% / 7 + 1px);
   }
 }
+
+.achievements__item-inner {
+  height: 100%;
+}
 </style>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Achievement from '@/components/Achievement.vue'
-import { achievements } from '@/store/achievements.ts'
+import { achievements, next, todo, done } from '@/store/achievements.ts'
 
 export default defineComponent({
   name: 'Achievements',
@@ -93,6 +81,9 @@ export default defineComponent({
   setup() {
     return {
       achievements,
+      done,
+      next,
+      todo,
     }
   },
 })

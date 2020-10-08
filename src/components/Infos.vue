@@ -21,11 +21,30 @@
       </div>
       <div class="infos__progress__value">
         {{ achievements.completed.length }} /
-        {{ achievements.total.length }} ({{ achievements.percent }}%)
+        {{ achievements.total.length }} ({{ percent }}%)
       </div>
     </div>
   </div>
 </template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+import { player } from '@/store/player.ts'
+import { game } from '@/store/game.ts'
+import { achievements, percent } from '@/store/achievements.ts'
+
+export default defineComponent({
+  name: 'Infos',
+  setup() {
+    return {
+      achievements,
+      game,
+      percent,
+      player,
+    }
+  },
+})
+</script>
 
 <style lang="scss" scoped>
 .infos {
@@ -100,21 +119,3 @@
   margin-top: 3px;
 }
 </style>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { player } from '@/store/player.ts'
-import { game } from '@/store/game.ts'
-import { achievements } from '@/store/achievements.ts'
-
-export default defineComponent({
-  name: 'Infos',
-  setup() {
-    return {
-      achievements,
-      game,
-      player,
-    }
-  },
-})
-</script>

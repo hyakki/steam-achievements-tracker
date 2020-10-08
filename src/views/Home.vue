@@ -20,7 +20,7 @@ import {
 } from '@/api/steamfake.ts'
 import { player } from '@/store/player.ts'
 import { game } from '@/store/game.ts'
-import { achievements, mark } from '@/store/achievements.ts'
+import { achievements } from '@/store/achievements.ts'
 
 interface GenericObject {
   [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -69,7 +69,7 @@ export default defineComponent({
           total: d.totalAchievements,
         })
       })
-    }, 1000)
+    }, 1500)
   },
 })
 </script>

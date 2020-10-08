@@ -1,13 +1,9 @@
-interface GenericObject {
-  [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
-}
-
 interface GameData {
   name: string
-  playerAchievements: GenericObject[]
+  playerAchievements: Record<string, string>[]
   playerAvatar: string
   playerName: string
-  totalAchievements: GenericObject[]
+  totalAchievements: Record<string, string>[]
   hours: string
 }
 
