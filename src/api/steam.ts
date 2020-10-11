@@ -9,7 +9,8 @@ interface GameData {
 
 const corsAnywhere = 'https://cors-anywhere.herokuapp.com/'
 const steamid = localStorage.getItem('steamid')
-const appid = '250900' // binding of isaac rebirth
+const appid = localStorage.getItem('appid')
+// const appid = '250900' // binding of isaac rebirth
 // const appid = "1145360"; // hades
 const key = localStorage.getItem('key')
 
@@ -57,7 +58,6 @@ const getPlayerSummaries = async () => {
   const storageKey = 'playerSummaries'
 
   const stored = localStorage.getItem(storageKey)
-
   if (stored) {
     return JSON.parse(stored)
   }
@@ -66,7 +66,7 @@ const getPlayerSummaries = async () => {
 
   const data = await fetch(url).then(response => response.json())
 
-  // localStorage.setItem(storageKey, JSON.stringify(data))
+  localStorage.setItem(storageKey, JSON.stringify(data))
 
   return data
 }
@@ -77,8 +77,6 @@ const getOwnedGames = async () => {
   const url = `${corsAnywhere}http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${key}&steamid=${steamid}`
 
   const data = await fetch(url).then(response => response.json())
-
-  debugger
 
   localStorage.setItem(storageKey, JSON.stringify(data))
 

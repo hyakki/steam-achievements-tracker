@@ -1,14 +1,15 @@
 <template>
   <div class="achievements">
-    <template
-      v-for="(list, index) in [next, todo, done]"
+    <section
+      class="achievements__section"
+      v-for="(list, index) in lists"
       :key="`list-${index}`"
     >
-      <h1>Target: {{ list.length }}</h1>
+      <h1>{{ list.name }}: {{ list.arr.value.length }}</h1>
       <ul class="achievements__list">
         <li
           class="achievements__item"
-          v-for="achievement in list"
+          v-for="achievement in list.arr.value"
           :key="`achievement-${achievement.name}`"
         >
           <Achievement
@@ -17,9 +18,7 @@
           />
         </li>
       </ul>
-
-      <hr />
-    </template>
+    </section>
   </div>
 </template>
 
@@ -34,8 +33,15 @@ export default defineComponent({
     Achievement,
   },
   setup() {
+    const lists = [
+      { name: 'Next', arr: next },
+      { name: 'Todo', arr: todo },
+      { name: 'Done', arr: done },
+    ]
+
     return {
       achievements,
+      lists,
       done,
       next,
       todo,
@@ -45,6 +51,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.achievements__section {
+  padding: 20px;
+  background-color: #fff;
+
+  &:nth-child(even) {
+    background-color: #ddd;
+  }
+}
+
 .achievements__list {
   display: flex;
   flex-wrap: wrap;
@@ -88,4 +103,3 @@ export default defineComponent({
   height: 100%;
 }
 </style>
-

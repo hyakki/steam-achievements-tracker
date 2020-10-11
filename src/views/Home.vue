@@ -1,27 +1,27 @@
 <template>
   <div class="home">
-    <Infos />
-    <Achievements />
+    <Settings class="home__settings" />
+    <Infos class="home__infos" />
+    <Achievements class="home__achievements" />
   </div>
 </template>
 
-<style lang="scss" scoped></style>
-
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Infos from '@/components/Infos.vue'
 import Achievements from '@/components/Achievements.vue'
+import Infos from '@/components/Infos.vue'
+import Settings from '@/components/Settings.vue'
 import {
   getData,
   getUserStatsForGame,
   getSchemaForGame,
   getPlayerSummaries,
   getOwnedGames,
-} from '@/api/steamfake.ts'
+} from '@/api/steam.ts'
 import { player } from '@/store/player.ts'
 import { game } from '@/store/game.ts'
 import { achievements } from '@/store/achievements.ts'
-import { entries, search } from '@/store/howlongtobeat.ts'
+import { picture, entries, search } from '@/store/howlongtobeat.ts'
 
 interface GenericObject {
   [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -39,8 +39,9 @@ interface GameData {
 export default defineComponent({
   name: 'Home',
   components: {
-    Infos,
     Achievements,
+    Infos,
+    Settings,
   },
   setup() {
     const userStatsForGame = getUserStatsForGame()
@@ -48,13 +49,8 @@ export default defineComponent({
     const playerSummaries = getPlayerSummaries()
     const ownedGames = getOwnedGames()
 
-    setTimeout(() => {
-      getData(
-        userStatsForGame,
-        schemaForGame,
-        playerSummaries,
-        ownedGames
-      ).then(d => {
+    getData(userStatsForGame, schemaForGame, playerSummaries, ownedGames).then(
+      d => {
         player.value = Object.assign(player.value, {
           avatar: d.playerAvatar,
           name: d.playerName,
@@ -69,12 +65,15 @@ export default defineComponent({
           completed: d.playerAchievements,
           total: d.totalAchievements,
         })
-      })
 
-      search('hades').then(d => {
-        entries.value = d
-      })
-    }, 1500)
+        search(d.name).then(d => {
+          entries.value = d.entries
+          picture.value = d.picture
+        })
+      }
+    )
   },
 })
 </script>
+
+<style lang="scss" scoped></style>

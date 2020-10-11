@@ -20,40 +20,35 @@ const mark = (name: string) => {
 }
 
 const next = computed(() => {
-  return achievements.value.total.filter(a => {
-    return achievements.value.marked.indexOf(a.name) >= 0
-  })
+  return achievements.value.total.filter(
+    a => achievements.value.marked.indexOf(a.name) >= 0
+  )
 })
 
 const todo = computed(() => {
-  return achievements.value.total.filter(a => {
-    return (
+  return achievements.value.total.filter(
+    a =>
       achievements.value.completed.indexOf(a.name) < 0 &&
       achievements.value.marked.indexOf(a.name) < 0
-    )
-  })
+  )
 })
 
 const done = computed(() => {
-  return achievements.value.total.filter(a => {
-    return (
-      achievements.value.completed.indexOf(a.name) >= 0 &&
-      achievements.value.marked.indexOf(a.name) < 0
-    )
-  })
+  const { total, completed, marked } = achievements.value
+
+  return total.filter(
+    a => completed.indexOf(a.name) >= 0 && marked.indexOf(a.name) < 0
+  )
 })
 
 const percent = computed(() => {
-  if (achievements.value.completed.length === 0) {
+  const { completed, total } = achievements.value
+
+  if (completed.length === 0) {
     return 0
   }
 
-  return (
-    Math.round(
-      (achievements.value.total.length / achievements.value.completed.length) *
-        10
-    ) / 10
-  )
+  return Math.round((completed.length / total.length) * 1000) / 10
 })
 
 export { achievements, mark, percent, next, todo, done }

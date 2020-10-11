@@ -13,7 +13,7 @@ const chunk = (arr: string[], size: number) => {
   return res
 }
 
-const search = async (name: string): Promise<Array<string[]>> => {
+const search = async (name: string): Promise<Record<string, any>> => {
   return fetch(`${corsAnywhere}${hltbURL}`, {
     headers: {
       'content-type': 'application/x-www-form-urlencoded',
@@ -41,10 +41,19 @@ const search = async (name: string): Promise<Array<string[]>> => {
       const arr = firstSearchList.querySelectorAll('.search_list_tidbit')
       const arr2 = [...arr].map(a => a.textContent) as string[]
 
-      return chunk(arr2, 2)
+      const picture = tmp.querySelector(
+        '.search_list_image img'
+      ) as HTMLImageElement
+      const src = picture.getAttribute('src')
+
+      return {
+        picture: src,
+        entries: chunk(arr2, 2),
+      }
     })
 }
 
 const entries = ref([] as Array<string[]>)
+const picture = ref('')
 
-export { search, entries }
+export { search, entries, picture }
