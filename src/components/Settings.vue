@@ -2,19 +2,24 @@
   <div class="settings">
     <form class="settings__form" @submit.prevent="onSubmit" ref="form">
       <select class="settings__form__item" v-model="appid">
-        <option value="250900">The Binding of Isaac Rebirth</option>
-        <option value="1145360">Hades</option>
+        <option
+          :value="game.appid"
+          v-for="game in player.owned"
+          :key="`game-${game.appid}`"
+        >
+          {{ game.name }}
+        </option>
       </select>
       <input
         class="settings__form__item"
-        type="text"
+        type="password"
         placeholder="steamid"
         v-model="steamid"
         required
       />
       <input
         class="settings__form__item"
-        type="text"
+        type="password"
         placeholder="key"
         v-model="key"
         required
@@ -26,6 +31,17 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import { player } from '@/store/player.ts'
+import {
+  getData,
+  getUserStatsForGame,
+  getSchemaForGame,
+  getPlayerSummaries,
+  getOwnedGames,
+} from '@/api/steam.ts'
+import { game } from '@/store/game.ts'
+import { achievements } from '@/store/achievements.ts'
+import { picture, entries, search } from '@/store/howlongtobeat.ts'
 
 export default defineComponent({
   name: 'Settings',
@@ -39,12 +55,51 @@ export default defineComponent({
       appid.value && localStorage.setItem('appid', appid.value)
       steamid.value && localStorage.setItem('steamid', steamid.value)
       key.value && localStorage.setItem('key', key.value)
+
+      const getAllData = () => {
+        const ownedGames = getOwnedGames()
+        const userStatsForGame = getUserStatsForGame()
+        const schemaForGame = getSchemaForGame()
+        const playerSummaries = getPlayerSummaries()
+
+        getData(
+          userStatsForGame,
+          schemaForGame,
+          playerSummaries,
+          ownedGames
+        ).then(d => {
+          player.value = Object.assign(player.value, {
+            avatar: d.playerAvatar,
+            name: d.playerName,
+            owned: d.playerGames,
+          })
+
+          game.value = Object.assign(game.value, {
+            name: d.name,
+            hours: d.hours,
+          })
+
+          achievements.value = Object.assign(achievements.value, {
+            completed: d.playerAchievements,
+            total: d.totalAchievements,
+          })
+
+          search(d.name).then(d => {
+            entries.value = d.entries
+            picture.value = d.picture
+          })
+        })
+      }
+
+      console.log(getAllData)
+      // getAllData()
     }
 
     return {
       appid,
       form,
       key,
+      player,
       onSubmit,
       steamid,
     }

@@ -11,7 +11,7 @@ import { game } from '@/store/game.ts'
 import { achievements } from '@/store/achievements.ts'
 import { picture, entries, search } from '@/store/howlongtobeat.ts'
 
-const duration = 120
+const duration = 300
 
 const timer = ref({
   time: duration,
@@ -28,37 +28,42 @@ const start = () => {
     if (timer.value.time <= 0) {
       timer.value.time = duration
 
-      const userStatsForGame = getUserStatsForGame()
-      const schemaForGame = getSchemaForGame()
-      const playerSummaries = getPlayerSummaries()
-      const ownedGames = getOwnedGames()
+      const getAllData = () => {
+        const ownedGames = getOwnedGames()
+        const userStatsForGame = getUserStatsForGame()
+        const schemaForGame = getSchemaForGame()
+        const playerSummaries = getPlayerSummaries()
 
-      getData(
-        userStatsForGame,
-        schemaForGame,
-        playerSummaries,
-        ownedGames
-      ).then(d => {
-        player.value = Object.assign(player.value, {
-          avatar: d.playerAvatar,
-          name: d.playerName,
-        })
+        getData(
+          userStatsForGame,
+          schemaForGame,
+          playerSummaries,
+          ownedGames
+        ).then(d => {
+          player.value = Object.assign(player.value, {
+            avatar: d.playerAvatar,
+            name: d.playerName,
+            owned: d.playerGames,
+          })
 
-        game.value = Object.assign(game.value, {
-          name: d.name,
-          hours: d.hours,
-        })
+          game.value = Object.assign(game.value, {
+            name: d.name,
+            hours: d.hours,
+          })
 
-        achievements.value = Object.assign(achievements.value, {
-          completed: d.playerAchievements,
-          total: d.totalAchievements,
-        })
+          achievements.value = Object.assign(achievements.value, {
+            completed: d.playerAchievements,
+            total: d.totalAchievements,
+          })
 
-        search(d.name).then(d => {
-          entries.value = d.entries
-          picture.value = d.picture
+          search(d.name).then(d => {
+            entries.value = d.entries
+            picture.value = d.picture
+          })
         })
-      })
+      }
+
+      getAllData()
     } else {
       decrease()
     }

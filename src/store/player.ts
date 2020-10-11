@@ -5,6 +5,7 @@ const player = ref({
   avatar: null,
   game: null,
   hours: null,
+  owned: [],
 })
 
 export { player }

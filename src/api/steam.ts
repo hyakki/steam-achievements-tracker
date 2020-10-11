@@ -1,8 +1,10 @@
 interface GameData {
   name: string
+  altName: string
   playerAchievements: Record<string, string>[]
   playerAvatar: string
   playerName: string
+  playerGames: Record<string, string | number>[]
   totalAchievements: Record<string, string>[]
   hours: string
 }
@@ -10,8 +12,6 @@ interface GameData {
 const corsAnywhere = 'https://cors-anywhere.herokuapp.com/'
 const steamid = localStorage.getItem('steamid')
 const appid = localStorage.getItem('appid')
-// const appid = '250900' // binding of isaac rebirth
-// const appid = "1145360"; // hades
 const key = localStorage.getItem('key')
 
 // Can be cached ?
@@ -40,10 +40,10 @@ const getUserStatsForGame = async () => {
 const getSchemaForGame = async () => {
   const storageKey = 'schemaForGame'
 
-  const stored = localStorage.getItem(storageKey)
-  if (stored) {
-    return JSON.parse(stored)
-  }
+  // const stored = localStorage.getItem(storageKey)
+  // if (stored) {
+  //   return JSON.parse(stored)
+  // }
 
   const url = `${corsAnywhere}http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=${key}&appid=${appid}`
 
@@ -74,7 +74,7 @@ const getPlayerSummaries = async () => {
 const getOwnedGames = async () => {
   const storageKey = 'ownedGames'
 
-  const url = `${corsAnywhere}http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${key}&steamid=${steamid}`
+  const url = `${corsAnywhere}http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${key}&steamid=${steamid}&include_appinfo=1`
 
   const data = await fetch(url).then(response => response.json())
 
@@ -105,9 +105,15 @@ const getData = async (
 
     const obj: GameData = {
       name: schema.game.gameName,
-      playerAchievements: user.playerstats.achievements.map(a => a.name),
+      altName: owned.response.games.find(g => g.appid == appid).name,
+      playerAchievements: user.playerstats.achievements
+        ? user.playerstats.achievements.map(a => a.name)
+        : [],
       playerAvatar: summaries.response.players[0].avatarfull,
       playerName: summaries.response.players[0].personaname,
+      playerGames: owned.response.games.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      ),
       totalAchievements: schema.game.availableGameStats.achievements,
       hours: formatHour(
         owned.response.games.find(g => g.appid == appid).playtime_forever

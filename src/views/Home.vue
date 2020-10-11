@@ -32,6 +32,7 @@ interface GameData {
   playerAchievements: GenericObject[]
   playerAvatar: string
   playerName: string
+  playerGames: []
   totalAchievements: GenericObject[]
   hours: string
 }
@@ -44,16 +45,22 @@ export default defineComponent({
     Settings,
   },
   setup() {
-    const userStatsForGame = getUserStatsForGame()
-    const schemaForGame = getSchemaForGame()
-    const playerSummaries = getPlayerSummaries()
-    const ownedGames = getOwnedGames()
+    const getAllData = () => {
+      const ownedGames = getOwnedGames()
+      const userStatsForGame = getUserStatsForGame()
+      const schemaForGame = getSchemaForGame()
+      const playerSummaries = getPlayerSummaries()
 
-    getData(userStatsForGame, schemaForGame, playerSummaries, ownedGames).then(
-      d => {
+      getData(
+        userStatsForGame,
+        schemaForGame,
+        playerSummaries,
+        ownedGames
+      ).then(d => {
         player.value = Object.assign(player.value, {
           avatar: d.playerAvatar,
           name: d.playerName,
+          owned: d.playerGames,
         })
 
         game.value = Object.assign(game.value, {
@@ -70,8 +77,10 @@ export default defineComponent({
           entries.value = d.entries
           picture.value = d.picture
         })
-      }
-    )
+      })
+    }
+
+    getAllData()
   },
 })
 </script>
