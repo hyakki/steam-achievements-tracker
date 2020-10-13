@@ -42,19 +42,20 @@ import {
 import { game } from '@/store/game.ts'
 import { achievements } from '@/store/achievements.ts'
 import { picture, entries, search } from '@/store/howlongtobeat.ts'
+import * as settings from '@/store/settings'
 
 export default defineComponent({
   name: 'Settings',
   setup() {
-    const appid = ref(localStorage.getItem('appid'))
-    const steamid = ref(localStorage.getItem('steamid'))
-    const key = ref(localStorage.getItem('key'))
+    const appid = ref<null | string>(settings.appid.value)
+    const steamid = ref<null | string>(settings.steamid.value)
+    const key = ref<null | string>(settings.key.value)
     const form = ref()
 
     const onSubmit = () => {
-      appid.value && localStorage.setItem('appid', appid.value)
-      steamid.value && localStorage.setItem('steamid', steamid.value)
-      key.value && localStorage.setItem('key', key.value)
+      settings.set('appid', appid.value)
+      settings.set('steamid', steamid.value)
+      settings.set('key', key.value)
 
       const getAllData = () => {
         const ownedGames = getOwnedGames()
@@ -91,8 +92,7 @@ export default defineComponent({
         })
       }
 
-      console.log(getAllData)
-      // getAllData()
+      getAllData()
     }
 
     return {

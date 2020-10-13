@@ -18,3 +18,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 </style>
+
+<script lang="ts">
+import { defineComponent, onMounted } from 'vue'
+import * as settings from '@/store/settings'
+
+export default defineComponent({
+  name: 'App',
+  setup() {
+    onMounted(() => {
+      settings.get()
+    })
+  },
+})
+</script>

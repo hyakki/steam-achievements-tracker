@@ -45,38 +45,33 @@ export default defineComponent({
     Settings,
   },
   setup() {
-    const getAllData = () => {
-      const ownedGames = getOwnedGames()
-      const userStatsForGame = getUserStatsForGame()
-      const schemaForGame = getSchemaForGame()
-      const playerSummaries = getPlayerSummaries()
+    const getAllData = async () => {
+      const d = await getData(
+        getUserStatsForGame(),
+        getSchemaForGame(),
+        getPlayerSummaries(),
+        getOwnedGames()
+      )
 
-      getData(
-        userStatsForGame,
-        schemaForGame,
-        playerSummaries,
-        ownedGames
-      ).then(d => {
-        player.value = Object.assign(player.value, {
-          avatar: d.playerAvatar,
-          name: d.playerName,
-          owned: d.playerGames,
-        })
+      player.value = Object.assign(player.value, {
+        avatar: d.playerAvatar,
+        name: d.playerName,
+        owned: d.playerGames,
+      })
 
-        game.value = Object.assign(game.value, {
-          name: d.name,
-          hours: d.hours,
-        })
+      game.value = Object.assign(game.value, {
+        name: d.name,
+        hours: d.hours,
+      })
 
-        achievements.value = Object.assign(achievements.value, {
-          completed: d.playerAchievements,
-          total: d.totalAchievements,
-        })
+      achievements.value = Object.assign(achievements.value, {
+        completed: d.playerAchievements,
+        total: d.totalAchievements,
+      })
 
-        search(d.name).then(d => {
-          entries.value = d.entries
-          picture.value = d.picture
-        })
+      search(d.name).then(d => {
+        entries.value = d.entries
+        picture.value = d.picture
       })
     }
 
